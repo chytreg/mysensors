@@ -1,0 +1,14 @@
+[Unit]
+Description=MySensors Gateway
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/bin/sh -c "docker run --rm --name=%n --net=host --privileged \
+  -v /opt/mysensors/shared:/opt/mysensors/shared \
+  chytreg/mysensors:rs485-mqtt-latest
+ExecStop=/usr/bin/docker stop -t 2 %n
+
+[Install]
+WantedBy=multi-user.target
