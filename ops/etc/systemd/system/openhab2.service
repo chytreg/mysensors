@@ -1,0 +1,21 @@
+[Unit]
+Description=openHAB 2
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/bin/sh -c "docker run --rm --name=%n --net=host \
+  -v /etc/localtime:/etc/localtime:ro \
+  -v /etc/timezone:/etc/timezone:ro \
+  -v /opt/openhab/conf:/openhab/conf \
+  -v /opt/openhab/userdata:/openhab/userdata \
+  -v /opt/openhab/addons:/openhab/addons \
+  -v /opt/openhab/.java:/openhab/.java \
+  -e USER_ID=$(id -u openhab) \
+  -e GROUP_ID=$(id -g openhab) \
+  openhab/openhab:2.5.3-armhf-debian"
+ExecStop=/usr/bin/docker stop -t 2 %n
+
+[Install]
+WantedBy=multi-user.target

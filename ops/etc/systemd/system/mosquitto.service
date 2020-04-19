@@ -1,0 +1,16 @@
+[Unit]
+Description=mosquitto
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/bin/sh -c "docker run --rm --name=%n --net=host \
+  --user $(id -u mosquitto):$(id -g mosquitto) \
+  -v /opt/mosquitto/config:/mosquitto/config:ro \
+  -v /opt/mosquitto/data:/mosquitto/data \
+  eclipse-mosquitto:1.6.9"
+ExecStop=/usr/bin/docker stop -t 2 %n
+
+[Install]
+WantedBy=multi-user.target
